@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-// Interface for Message schema to define its structure and type
+// Interface for Message schema to define its Structure and type
 export interface Message extends Document { 
     content: string; // The content of the message
     createdAt: Date; // The timestamp of when the message was created

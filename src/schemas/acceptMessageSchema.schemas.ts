@@ -1,4 +1,4 @@
-import { z } from "zod"; // Importing zod for schema validation
+import { z } from "zod"; // Importing ZOD for schema validation
 
 // Validation schema for accepting messages
 export const acceptMessageSchema = z.object({

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AuthProvider from "./context/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,12 +24,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html lang="en"> {/* ✅ Defines the root HTML element with language set to English */}
+      <AuthProvider> {/* ✅ Wraps the application with authentication context */}
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {children} {/* ✅ Renders all child components inside the layout */}
+        </body>
+      </AuthProvider>
     </html>
   );
 }
+
+/* 
+  🔑 Key Concepts:
+  1️⃣ `RootLayout`: Serves as the main layout for the entire app.
+  2️⃣ `<AuthProvider>`: Ensures authentication context is available globally.
+  3️⃣ `<html lang="en">`: Sets the language of the document (important for accessibility & SEO).
+  4️⃣ `children`: Represents all components rendered inside this layout.
+  5️⃣ `className`: Applies global font styles (`geistSans`, `geistMono`) and enables smooth font rendering (`antialiased`).
+  6️⃣ Used in `layout.tsx` for Next.js 13+ to define consistent structure across pages.
+*/

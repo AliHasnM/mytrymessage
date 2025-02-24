@@ -67,3 +67,29 @@ export async function POST(request: Request) {
     );
   }
 }
+
+/*
+  🔑 **Key Concepts Used:**
+  ---------------------------------
+  1️⃣ **Database Connection (`dbConnect()`)**  
+      - MongoDB se connect hone ke liye async function.  
+      
+  2️⃣ **Handling HTTP POST Requests**  
+      - request.json() se body parse karna.  
+      
+  3️⃣ **Database Query (`findOne()`)**  
+      - `findOne()` se username ke basis pe user dhundhna.  
+
+  4️⃣ **Error Handling & Response Codes**  
+      - **404 (Not Found):** Jab user nahi milta.  
+      - **403 (Forbidden):** Jab user messages accept nahi kar raha.  
+      - **201 (Created):** Jab message successfully send ho jata hai.  
+      - **500 (Internal Server Error):** Jab koi unexpected error hota hai.  
+
+  5️⃣ **Data Validation & Security**  
+      - Pehle check kiya jata hai ke user exist karta hai ya nahi.  
+      - Phir check kiya jata hai ke user messages accept kar raha hai ya nahi.  
+      - `try-catch` block se errors handle kiye gaye hain.  
+
+  ✅ Yeh code ek **secure, efficient aur structured** approach follow karta hai jo best practices ko implement karta hai.
+*/

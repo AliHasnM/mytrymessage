@@ -16,12 +16,13 @@ export async function GET(request: Request) {
 
   // 🔹 Check if user is authenticated
   if (!session || !session.user) {
-    return new Response(
-      JSON.stringify({
+    return Response.json(
+      {
         success: false,
-        message: "Not Authenticated. You must be logged in to get messages.",
-      }),
-      { status: 401 } // ❌ 401: Unauthorized - The user is not logged in
+        message:
+          "Not Authenticated. You must be logged in to access this resource.",
+      },
+      { status: 401 } // ❌ 401: Unauthorized - User is not authenticated
     );
   }
 
@@ -52,32 +53,32 @@ export async function GET(request: Request) {
       userMessages.length === 0 ||
       !userMessages[0].messages.length
     ) {
-      return new Response(
-        JSON.stringify({
+      return Response.json(
+        {
           success: false,
           message: "No messages found for the user.",
-        }),
-        { status: 404 } // ❌ 404: Not Found - No messages exist for the user
+        },
+        { status: 404 } // ❌ 404: Not Found - No messages found for
       );
     }
 
     // 🔹 Return retrieved messages
-    return new Response(
-      JSON.stringify({
+    return Response.json(
+      {
         success: true,
         messages: userMessages[0].messages,
-      }),
-      { status: 200 } // ✅ 200: OK - Messages successfully retrieved
+      },
+      { status: 200 } // ✅ 200: OK - Successful response
     );
   } catch (error) {
     log("Error getting messages for user: ", error); // 🔹 Log error for debugging
 
     // 🔹 Handle unexpected server errors
-    return new Response(
-      JSON.stringify({
+    return Response.json(
+      {
         success: false,
-        message: "Server error: Failed to get messages.",
-      }),
+        message: "Unexpected server error",
+      },
       { status: 500 } // ❌ 500: Internal Server Error - Unexpected issue
     );
   }
@@ -94,7 +95,7 @@ export async function GET(request: Request) {
       - `$sort`: Sort messages in descending order (latest first).
       - `$group`: Collect messages into an array for the user.
   4️⃣ **Handling No Messages:** Ensures response is correctly handled if the user has no messages.
-  5️⃣ **Fixed Response Format:** Used `new Response(JSON.stringify(...))` instead of `Response.json(...)`.
+  5️⃣ **Fixed Response Format:** Used `Response.json({},{}))`.
   6️⃣ **Fixed Variable Name Conflict:** Changed `user` in `try` block to `userMessages` to avoid overwriting the session user.
   7️⃣ **Error Handling:** Proper error logging and response messages.
 

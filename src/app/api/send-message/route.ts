@@ -14,22 +14,22 @@ export async function POST(request: Request) {
 
     // ❌ If user is not found, return 404 response
     if (!user) {
-      return new Response(
-        JSON.stringify({
+      return Response.json(
+        {
           success: false,
           message: "User not found",
-        }),
+        },
         { status: 404 }
       );
     }
 
     // ❌ If user is not accepting messages, return 403 response
     if (!user.isAcceptingMessage) {
-      return new Response(
-        JSON.stringify({
+      return Response.json(
+        {
           success: false,
           message: "User is not accepting messages",
-        }),
+        },
         { status: 403 }
       );
     }
@@ -47,22 +47,22 @@ export async function POST(request: Request) {
     await user.save();
 
     // ✅ Successfully sent message response
-    return new Response(
-      JSON.stringify({
+    return Response.json(
+      {
         success: true,
         message: "Message sent successfully",
-      }),
+      },
       { status: 201 }
     );
   } catch (error) {
     log("Error sending message", error); // 🔹 Log error for debugging
 
     // ❌ Server error response
-    return new Response(
-      JSON.stringify({
+    return Response.json(
+      {
         success: false,
         message: "Error sending message",
-      }),
+      },
       { status: 500 }
     );
   }

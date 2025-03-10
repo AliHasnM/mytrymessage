@@ -35,4 +35,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+Documentation:
 Next Auth Js / Auth Js https://next-auth.js.org
+React Hook Form https://react-hook-form.com/
+Shadcn https://ui.shadcn.com/
+useHook-ts https://usehooks-ts.com/

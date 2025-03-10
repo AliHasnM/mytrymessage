@@ -1,5 +1,4 @@
 'use client' // ✅ Ensures this component runs only on the client side
-
 import { useSession, signIn, signOut } from "next-auth/react"; // ✅ Import NextAuth hooks for authentication
 
 export default function Component() {

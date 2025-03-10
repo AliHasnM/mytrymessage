@@ -158,3 +158,35 @@ const page = () => {
 }
 
 export default page;
+
+/*
+  🔑 **Key Concepts Used in this Sign-Up Page:**
+  -------------------------------------------------
+  1️⃣ **React Hook Form + Zod Validation**  
+      - Form handling via `useForm()` with `zodResolver(signUpSchema)`.  
+      - `signUpSchema` ensures form fields meet validation criteria.  
+
+  2️⃣ **Username Availability Check (Debounced)**  
+      - `useDebounceCallback` prevents excessive API calls.  
+      - `useEffect` triggers `/api/check-username-unique` when `username` changes.  
+
+  3️⃣ **Asynchronous API Calls with Axios**  
+      - `axios.get()` checks username uniqueness.  
+      - `axios.post()` sends form data to `/api/sign-up` for account creation.  
+
+  4️⃣ **User Feedback & Loading States**  
+      - `isCheckingUsername` shows a loading spinner while checking username.  
+      - `isSubmitting` disables the submit button during form submission.  
+
+  5️⃣ **Toast Notifications**  
+      - `toast.success()` displays a success message upon successful sign-up.  
+      - `toast.error()` handles API errors and shows appropriate messages.  
+
+  6️⃣ **Client-Side Navigation**  
+      - `useRouter().replace()` redirects user to email verification page.  
+
+  7️⃣ **Tailwind CSS for UI Styling**  
+      - Utility classes (`bg-gray-100`, `rounded-lg`, `shadow-md`) for a responsive UI.  
+
+  ✅ **This page ensures smooth, user-friendly sign-ups with proper validation, error handling, and API integration.**
+*/

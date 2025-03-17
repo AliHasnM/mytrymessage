@@ -1,6 +1,6 @@
 "use client"
 import { Button } from '@/components/ui/button'
-/* eslint-disable react-hooks/rules-of-hooks */
+
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -33,7 +33,7 @@ const VerifyAccount = () => {
                 description: response.data.message,
             });
 
-            router.replace('sign-in')
+            router.replace('/sign-in')
 
         } catch (error) {
             console.log("Error in verifying user", error);

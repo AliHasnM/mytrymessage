@@ -1,0 +1,17 @@
+[
+    {
+        "title": "Hello World",
+        "content": "This is a simple message",
+        "received": "10 minutes ago"
+    },
+    {
+        "title": "Hello World 2",
+        "content": "This is a simple message 2",
+        "received": "20 minutes ago"
+    },
+    {
+        "title": "Hello World 3",
+        "content": "This is a simple message 3",
+        "received": "30 minutes ago"
+    }
+]

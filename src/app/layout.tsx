@@ -8,12 +8,15 @@ import Navbar from "@/components/Navbar";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  // display: "swap", // ✅ Adds a fallback font while loading
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  // display: "swap",
 });
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,13 +26,13 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">  {/* ✅ Correctly wraps the whole layout */}
-      <AuthProvider> {/* ✅ Wraps the application with authentication context */}
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <AuthProvider> {/* ✅ Wraps the application with authentication context */}
           <Navbar />
           {children}
           <Toaster />
-        </body>
-      </AuthProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 }

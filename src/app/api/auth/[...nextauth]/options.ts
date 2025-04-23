@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextAuthOptions } from "next-auth"; // Importing NextAuth options type
-import CreadentialsProvider from "next-auth/providers/credentials"; // Importing credentials provider for username/password authentication
+import CredentialsProvider from "next-auth/providers/credentials"; // Importing credentials provider for username/password authentication
 import bcrypt from "bcryptjs"; // Importing bcrypt for password hashing and comparison
 import dbConnect from "@/lib/dbConnect.lib"; // Importing function to connect to MongoDB
 import UserModel from "@/model/User.model"; // Importing User model to interact with the database
@@ -8,12 +9,12 @@ import UserModel from "@/model/User.model"; // Importing User model to interact 
 export const authOptions: NextAuthOptions = {
   // Defining authentication providers (only credentials provider is used here)
   providers: [
-    CreadentialsProvider({
-      id: "creadentials", // Unique identifier for this provider
-      name: "Creadentials", // Name of the provider
+    CredentialsProvider({
+      id: "credentials", // Unique identifier for this provider
+      name: "Credentials", // Name of the provider
       credentials: {
-        email: {
-          label: "Email", // Label for email input
+        identifier: {
+          label: "Username/Email", // Label for username or email input
           type: "email", // Input type (email)
           placeholder: "example@gmail.com", // Placeholder text for email input
         },
@@ -42,7 +43,9 @@ export const authOptions: NextAuthOptions = {
 
           // Check if the user's email is verified before allowing login
           if (!user.isVerified) {
-            throw new Error("User is not verified with this email");
+            throw new Error(
+              "User is not verified. Please verify your account."
+            );
           }
 
           // Comparing the provided password with the hashed password stored in the database
@@ -58,7 +61,7 @@ export const authOptions: NextAuthOptions = {
             throw new Error("Password is incorrect");
           }
         } catch (error: any) {
-          throw new Error(error); // Catch and rethrow any errors during authentication
+          throw new Error(error.message || "Authentication failed");
         }
       },
     }),
@@ -71,6 +74,7 @@ export const authOptions: NextAuthOptions = {
         token._id = user._id?.toString(); // Storing user ID in token
         token.username = user.username; // Storing username in token
         token.isVerified = user.isVerified; // Storing verification status in token
+        token.email = user.email;
         token.isAcceptingMessages = user.isAcceptingMessages; // Storing message acceptance status in token
       }
       return token; // Return modified token
@@ -80,6 +84,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user._id = token._id; // Assigning user ID from token to session
         session.user.username = token.username; // Assigning username from token to session
+        session.user.email = token.email;
         session.user.isVerified = token.isVerified; // Assigning verification status from token to session
         session.user.isAcceptingMessages = token.isAcceptingMessages; // Assigning message acceptance status from token to session
       }
@@ -88,6 +93,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/sign-in", // Custom sign-in page route
+    error: "/sign-in", // ✅ Redirect to login page on error
   },
   session: {
     strategy: "jwt", // Using JWT-based sessions for authentication

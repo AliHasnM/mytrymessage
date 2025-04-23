@@ -8,7 +8,8 @@ export async function DELETE(
   request: Request,
   { params }: { params: { messageid: string } }
 ) {
-  const messageId = params.messageid;
+  const { messageid } = await params; // Await the params first to ensure it's resolved
+  const messageId = messageid;
   await dbConnect(); // 🔹 Ensure database connection
 
   const session = await getServerSession(authOptions);

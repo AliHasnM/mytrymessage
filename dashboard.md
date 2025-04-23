@@ -12,18 +12,17 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import axios, { AxiosError } from 'axios'
 import { Loader2, RefreshCcw } from 'lucide-react'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 const Page = () => {
-    const [messages, setMessages] = useState<Message[]>([])
-    const [isLoading, setIsLoading] = useState(false)
-    const [isSwitchLoading, setIsSwitchLoading] = useState(false)
-    const [profileUrl, setProfileUrl] = useState<string | null>('')
-
-    const router = useRouter();
+const [messages, setMessages] = useState<Message[]>([])
+const [isLoading, setIsLoading] = useState(false)
+const [isSwitchLoading, setIsSwitchLoading] = useState(false)
+const [isClient, setIsClient] = useState(false); // Added state to track if client-sideor server-side rendering
+const router = useRouter();
 
     const { data: session } = useSession();
     const user = session?.user as User | undefined;
@@ -50,24 +49,10 @@ const Page = () => {
     }, [setValue]);
 
     // 🔹 Fetch User Messages
-    // const fetchMessages = useCallback(async (refresh = false) => {
-    //     setIsLoading(true);
-    //     try {
-    //         const response = await axios.get<ApiResponse>('/api/get-messages');
-    //         setMessages(response.data.messages || []);
-    //         if (refresh) toast.success('Messages refreshed successfully');
-    //     } catch (error) {
-    //         console.error("Error fetching messages:", error);
-    //         toast.error((error as AxiosError<ApiResponse>)?.response?.data?.message || 'Failed to fetch messages');
-    //         setIsLoading(false);
-    //     } finally {
-    //     }
-    // }, []);
     const fetchMessages = useCallback(async (refresh = false) => {
         setIsLoading(true);
         try {
             const response = await axios.get<ApiResponse>('/api/get-messages');
-            console.log(response.data.messages); // Debugging: Check if messages are correct
             setMessages(response.data.messages || []);
             if (refresh) toast.success('Messages refreshed successfully');
         } catch (error) {
@@ -75,7 +60,6 @@ const Page = () => {
             toast.error((error as AxiosError<ApiResponse>)?.response?.data?.message || 'Failed to fetch messages');
             setIsLoading(false);
         } finally {
-            setIsLoading(false);
         }
     }, []);
 
@@ -91,24 +75,12 @@ const Page = () => {
         setMessages((prevMessages) => prevMessages.filter((message) => message._id !== messageId));
     };
 
-    useEffect(() => {
-        // On mount, check the localStorage for saved state
-        const savedState = localStorage.getItem('acceptMessages');
-        if (savedState !== null) {
-            setValue('acceptMessages', JSON.parse(savedState));  // Set the state from localStorage
-        }
-    }, [setValue]);
-
     // 🔹 Handle Switch Toggle for Accepting Messages
     const handleSwitchChange = async () => {
         setIsSwitchLoading(true);
         try {
             const response = await axios.post<ApiResponse>('/api/accept-messages', { acceptMessages: !acceptMessages });
             setValue('acceptMessages', !acceptMessages);
-
-            // Save the state to localStorage for other tabs
-            localStorage.setItem('acceptMessages', JSON.stringify(!acceptMessages));
-
             toast.success(response.data.message);
         } catch (error) {
             console.error(error);
@@ -117,33 +89,13 @@ const Page = () => {
             setIsSwitchLoading(false);
         }
     };
-    // 🔹 Handle Switch Toggle for Accepting Messages
-    // const handleSwitchChange = async () => {
-    //     setIsSwitchLoading(true);
-    //     try {
-    //         const response = await axios.post<ApiResponse>('/api/accept-messages', { acceptMessages: !acceptMessages });
-    //         setValue('acceptMessages', !acceptMessages);
-    //         toast.success(response.data.message);
-    //     } catch (error) {
-    //         console.error(error);
-    //         toast.error((error as AxiosError<ApiResponse>)?.response?.data?.message || 'Failed to update user status');
-    //     } finally {
-    //         setIsSwitchLoading(false);
-    //     }
-    // };
 
     // 🔹 Generate and Copy Profile URL
-    // const baseUrl = `${window.location.protocol}//${window.location.host}`;
-    // const profileUrl = `${baseUrl}/u/${user?.username}`;
-    useEffect(() => {
-        if (typeof window !== "undefined" && user?.username) {
-            const baseUrl = `${window.location.protocol}//${window.location.host}`;
-            setProfileUrl(`${baseUrl}/u/${user.username}`);
-        }
-    }, [user]); // Runs when `user` changes
+    const baseUrl = `${window.location.protocol}//${window.location.host}`;
+    const profileUrl = `${baseUrl}/u/${user?.username}`;
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(profileUrl || '');
+        navigator.clipboard.writeText(profileUrl);
         toast.success('Profile URL copied to clipboard');
         // Redirect to publicProfile page
         router.replace('/profile');
@@ -161,7 +113,7 @@ const Page = () => {
             <div className='mb-4'>
                 <h2 className='text-lg font-semibold mb-2'>Copy Your Unique Link</h2>
                 <div className='flex items-center'>
-                    <Input type='text' value={profileUrl || ''} disabled className='input input-bordered w-full p-2 mr-2' />
+                    <Input type='text' value={profileUrl} disabled className='input input-bordered w-full p-2 mr-2' />
                     <Button onClick={copyToClipboard}>Copy</Button>
                 </div>
             </div>
@@ -194,6 +146,7 @@ const Page = () => {
             </div>
         </div>
     );
+
 };
 
 export default Page;

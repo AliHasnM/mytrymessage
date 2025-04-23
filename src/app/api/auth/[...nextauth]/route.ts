@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"; // Importing NextAuth for authentication
-import { authOptions } from "./options"; // Importing authentication options from a separate file
+import { authOptions } from "./options";
+// Importing authentication options from a separate file
 
 const handler = NextAuth(authOptions); // Initializing NextAuth with the provided options
 

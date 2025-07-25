@@ -5,22 +5,24 @@ import dbConnect from "@/lib/dbConnect.lib";
 import UserModel from "@/model/User.model";
 import { User } from "next-auth";
 
-export async function DELETE(
-  req: NextRequest,
-  context: { params: { messageid: string } }
-) {
+type Context = {
+  params: {
+    messageid: string;
+  };
+};
+
+export async function DELETE(req: NextRequest, context: Context) {
   const { messageid } = context.params;
 
   await dbConnect();
   const session = await getServerSession(authOptions);
-  const user: User | null = session?.user as User;
+  const user = session?.user as User;
 
   if (!session || !session.user) {
     return NextResponse.json(
       {
         success: false,
-        message:
-          "Not Authenticated. You must be logged in to access this resource.",
+        message: "Not Authenticated. You must be logged in.",
       },
       { status: 401 }
     );
@@ -50,7 +52,7 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting message:", error);
+    console.error("Delete error:", error);
     return NextResponse.json(
       {
         success: false,

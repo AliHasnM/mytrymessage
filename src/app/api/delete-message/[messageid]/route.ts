@@ -6,9 +6,9 @@ import { User } from "next-auth";
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { messageid: string } }
+  context: { params: { messageid: string } }
 ) {
-  const { messageid } = await params; // Await the params first to ensure it's resolved
+  const { messageid } = context.params; // Await the params first to ensure it's resolved
   const messageId = messageid;
   await dbConnect(); // 🔹 Ensure database connection
 

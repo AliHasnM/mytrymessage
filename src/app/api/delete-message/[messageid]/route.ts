@@ -1,20 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect.lib";
 import UserModel from "@/model/User.model";
 import { User } from "next-auth";
 
-type Context = {
-  params: {
-    messageid: string;
-  };
-};
-
-export async function DELETE(req: NextRequest, context: Context) {
-  const { messageid } = context.params;
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { messageid: string } }
+) {
+  const messageId = params.messageid;
 
   await dbConnect();
+
   const session = await getServerSession(authOptions);
   const user = session?.user as User;
 
@@ -22,7 +20,8 @@ export async function DELETE(req: NextRequest, context: Context) {
     return NextResponse.json(
       {
         success: false,
-        message: "Not Authenticated. You must be logged in.",
+        message:
+          "Not Authenticated. You must be logged in to access this resource.",
       },
       { status: 401 }
     );
@@ -31,7 +30,7 @@ export async function DELETE(req: NextRequest, context: Context) {
   try {
     const updatedUser = await UserModel.updateOne(
       { _id: user._id },
-      { $pull: { messages: { _id: messageid } } }
+      { $pull: { messages: { _id: messageId } } }
     );
 
     if (updatedUser.modifiedCount === 0) {
@@ -52,7 +51,8 @@ export async function DELETE(req: NextRequest, context: Context) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Delete error:", error);
+    console.error("Error deleting message:", error);
+
     return NextResponse.json(
       {
         success: false,

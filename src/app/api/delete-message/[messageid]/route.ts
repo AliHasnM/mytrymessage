@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect.lib";
@@ -6,10 +6,10 @@ import UserModel from "@/model/User.model";
 import { User } from "next-auth";
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { messageid: string } }
+  req: NextRequest,
+  context: { params: Record<string, string> }
 ) {
-  const messageId = params.messageid;
+  const { messageid } = context.params;
 
   await dbConnect();
 
@@ -30,7 +30,7 @@ export async function DELETE(
   try {
     const updatedUser = await UserModel.updateOne(
       { _id: user._id },
-      { $pull: { messages: { _id: messageId } } }
+      { $pull: { messages: { _id: messageid } } }
     );
 
     if (updatedUser.modifiedCount === 0) {

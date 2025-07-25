@@ -5,11 +5,15 @@ import dbConnect from "@/lib/dbConnect.lib";
 import UserModel from "@/model/User.model";
 import { User } from "next-auth";
 
-export async function DELETE(
-  req: NextRequest,
-  context: { params: Record<string, string> }
-) {
-  const { messageid } = context.params;
+// ✅ Vercel expects this specific type from Next.js:
+interface Params {
+  params: {
+    messageid: string;
+  };
+}
+
+export async function DELETE(req: NextRequest, { params }: Params) {
+  const { messageid } = params;
 
   await dbConnect();
 
